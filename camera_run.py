@@ -1,5 +1,5 @@
 import cv2
-
+import time
 cascPath = "Cascades/haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
@@ -18,13 +18,12 @@ while True:
         minSize=(30, 30),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-    # Draw a rectangle around the faces
+
     for x, y, w, h in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-
+        cv2.rectangle(frame, (int(x + w / 2 - w / 5), int(y + h / 5 - h / 6)), (int(x + w / 2 + w / 5), int(y + h / 5)),
+                      (255, 0, 0), 2)
     # Display the resulting frame
-    cv2.imshow('Video', frame)
-
+    cv2.imshow('Faces', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
