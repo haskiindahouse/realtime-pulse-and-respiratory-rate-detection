@@ -3,7 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib; matplotlib.use('agg')
-cascPath = "Cascades/haarcascade_frontalface_default.xml"
+cascPath = f"C:\\Dev\\Outer_prjs\\realtime-pulse-and-respiratory-rate-detection\\Cascades\\haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 #
 heartbeat_count = 128
