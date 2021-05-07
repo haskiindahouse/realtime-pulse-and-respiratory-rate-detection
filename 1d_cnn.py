@@ -6,7 +6,7 @@ import pandas as pd
 # Считывание исходных данных
 data_x = []
 for i in range(10):
-    rawd = pd.read_csv("pulse" + str(i+1) + ".csv", sep=",")
+    rawd = pd.read_csv("data/pulse" + str(i+1) + ".csv", sep=",")
     oo = [i[0] for i in rawd.values.tolist()]
     data_x.append(oo[:700])
 #print(data_x)
