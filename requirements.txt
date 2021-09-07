@@ -1,0 +1,6 @@
+numpy
+PyQt5
+opencv-python
+cmake
+dlib
+face-recognition
