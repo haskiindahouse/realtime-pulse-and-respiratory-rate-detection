@@ -3,10 +3,12 @@ import cv2
 import face_recognition
 import numpy as np
 import sys
+from database import createDB
+from stylesheets import plainTextStyle, pushButtonStyle, mainWindowStyle, lineEditStyle
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtGui import QImage, QPixmap, QIcon
 
 
 class Ui(QWidget):
@@ -17,7 +19,7 @@ class Ui(QWidget):
 
     @pyqtSlot(QImage)
     def setImage(self, image):
-        self.label.setPixmap(QPixmap.fromImage(image))
+        self.cameraRoll.setPixmap(QPixmap.fromImage(image))
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Q:
@@ -26,19 +28,63 @@ class Ui(QWidget):
     def exit(self):
         self.th.destroy()
 
+
+
     def initUi(self):
-        vBoxLayout = QVBoxLayout()
-        self.label = QLabel(self)
+        vBoxLayout = QVBoxLayout(self)
+        self.userName = QLineEdit(self)
+        self.userName.setStyleSheet(lineEditStyle())
+        self.addUserBtn = QPushButton(self)
+        self.addUserBtn.setStyleSheet(pushButtonStyle())
+        self.addUserBtn.setFixedSize(50, 50)
+        addUserLogo = QPixmap('sources/add_user_logo.png')
+        addUserIcon = QIcon(addUserLogo)
+        self.addUserBtn.setIcon(addUserIcon)
+        self.addUserBtn.setIconSize(QSize(50, 50))
+        self.addUserBtn.clicked.connect(self.appendUser)
+
+        self.cameraRoll = QLabel(self)
         self.th = Thread(self)
         self.th.changePixmap.connect(self.setImage)
         self.th.start()
 
-        vBoxLayout.addWidget(self.label)
+        self.customLog = QPlainTextEdit(self)
+        self.customLog.setStyleSheet(plainTextStyle())
+
+        self.customLog.setReadOnly(True)
+        self.customLog.blockCountChanged.connect(self.logAutoClear)
+
+        con = createDB.createConnection(self.customLog)
+        createDB.createTable(con, self.customLog)
+        hBoxLayout = QHBoxLayout(self)
+        hBoxLayout.addWidget(self.cameraRoll)
+        hBoxLayout.addWidget(self.userName)
+        hBoxLayout.addWidget(self.addUserBtn)
+
+        vBoxLayout.addLayout(hBoxLayout)
+        vBoxLayout.addWidget(self.customLog)
         self.setLayout(vBoxLayout)
         self.move(300, 300)
-        self.setWindowTitle('real-time-pulse-detection v1.0')
-        self.resize(800, 800)
+        self.setWindowIcon(QIcon('sources/app_logo.png'))
+        self.setStyleSheet(mainWindowStyle())
+        self.setWindowTitle('PULSER 1.0')
+        self.resize(800, 500)
         self.show()
+
+    def appendUser(self):
+        """
+        Добавляет пользователя в бд для дальнейшего отслеживания его параметров.
+        """
+        self.customLog.appendPlainText("User " + self.userName.text() + " was added!")
+
+
+    def logAutoClear(self):
+        """
+        Очищает QPlainText каждые 10 записей
+        """
+        blockCount = self.customLog.blockCount()
+        if blockCount > 10:
+            self.customLog.clear()
 
 
 class Thread(QThread):
