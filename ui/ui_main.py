@@ -7,7 +7,7 @@ from database import createDB
 from stylesheets import plainTextStyle, pushButtonStyle, mainWindowStyle, lineEditStyle
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot, QSize, QByteArray, QBuffer, QIODevice
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 
 
@@ -54,8 +54,8 @@ class Ui(QWidget):
         self.customLog.setReadOnly(True)
         self.customLog.blockCountChanged.connect(self.logAutoClear)
 
-        con = createDB.createConnection(self.customLog)
-        createDB.createTable(con, self.customLog)
+        self.con = createDB.createConnection(self.customLog)
+        createDB.createTable(self.con, self.customLog)
         hBoxLayout = QHBoxLayout(self)
         hBoxLayout.addWidget(self.cameraRoll)
         hBoxLayout.addWidget(self.userName)
@@ -75,8 +75,42 @@ class Ui(QWidget):
         """
         Добавляет пользователя в бд для дальнейшего отслеживания его параметров.
         """
-        self.customLog.appendPlainText("User " + self.userName.text() + " was added!")
+        userName = self.userName.text()
+        # TODO
+        # AveragePulse сейчас - просто я значение ввел
+        averagePulse = 60
+        createDB.insertBLOB(self.con, userName, averagePulse, self.pixmapToBytes())
+        self.printLog("User " + userName + " was added!")
 
+    def pixmapToBytes(self):
+        """
+        Конвертирует из QPixmap into bytes
+        """
+        ba = QByteArray()
+        buff = QBuffer(ba)
+        buff.open(QIODevice.WriteOnly)
+        ok = self.cameraRoll.pixmap().save(buff, "PNG")
+        assert ok
+        pixmap_bytes = ba.data()
+        self.printLog("Converting to bytes successful!")
+        return pixmap_bytes
+
+    def printLog(self, string):
+        """
+        Печатает string into your log.
+        :return:
+        """
+        self.customLog.appendPlainText(str(string))
+
+    def bytesToPixmap(self, pixmapBytes):
+        """
+        Конвертирует из bytes into QPixmap
+        """
+        ba = QByteArray(pixmapBytes)
+        pixmap = QPixmap()
+        ok = pixmap.loadFromData(ba, "PNG")
+        assert ok
+        self.printLog("Converting to QPixmap successful!")
 
     def logAutoClear(self):
         """

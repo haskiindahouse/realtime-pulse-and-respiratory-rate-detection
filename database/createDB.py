@@ -53,7 +53,7 @@ def convertToBinaryData(filename):
     return blobData
 
 
-def insertBLOB(con, name, frame):
+def insertBLOB(con, name, averagePulse, bytesFrame):
     """
 
     :param con:
@@ -66,14 +66,9 @@ def insertBLOB(con, name, frame):
     cursor = con.cursor()
     # insert query
     sqlite_insert_blob_query = """ INSERT INTO Users
-                              (name, img) VALUES (?, ?)"""
+                              (name, averagePulse, image) VALUES (?, ?, ?)"""
 
-    # Converting human readable file into
-    # binary data
-    empPhoto = convertToBinaryData(frame)
-
-    # Convert data into tuple format
-    data_tuple = (name, empPhoto)
+    data_tuple = (name, averagePulse, bytesFrame)
 
     # using cursor object executing our query
     cursor.execute(sqlite_insert_blob_query, data_tuple)
