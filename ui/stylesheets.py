@@ -43,10 +43,11 @@ QPushButton:pressed
 
 def mainWindowStyle():
     return """
-    QWidget {
-  background-color: black;
-}
-"""
+        QWidget {
+      background-color: black;
+    }
+    """
+
 
 def lineEditStyle():
     return """
