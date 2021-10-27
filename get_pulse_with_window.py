@@ -6,6 +6,8 @@ import matplotlib; matplotlib.use('agg')
 import pandas as pd
 import time
 
+from getPulse import getPulse_simplePeaks
+
 # 480 x 640
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FPS, 30)
@@ -43,6 +45,7 @@ while(True):
     plot_img_np = plot_img_np.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     plt.cla()
     
+    ''' для получения отладочных данных
     if (itc == 50):
         itc = 0
         tempd = pd.DataFrame({
@@ -50,6 +53,11 @@ while(True):
             "y" : heartbeat_values
         })
         tempd.to_csv("./pulseDataRaw/d{}.csv".format(int(time.time())), sep=",")
+    '''
+
+    if (itc == 50):
+        itc = 0
+        print(getPulse_simplePeaks(heartbeat_times, heartbeat_values))
 
     cv2.imshow('Graph', plot_img_np)
 
