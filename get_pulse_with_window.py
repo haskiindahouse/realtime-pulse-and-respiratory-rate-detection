@@ -6,7 +6,7 @@ import matplotlib; matplotlib.use('agg')
 import pandas as pd
 import time
 
-from getPulse import getPulse_simplePeaks
+from getPulse import getPulse_cutLowFreq
 
 # 480 x 640
 cap = cv2.VideoCapture(0)
@@ -57,7 +57,7 @@ while(True):
 
     if (itc == 50):
         itc = 0
-        print(getPulse_simplePeaks(heartbeat_times, heartbeat_values))
+        print(getPulse_cutLowFreq(heartbeat_times, heartbeat_values))
 
     cv2.imshow('Graph', plot_img_np)
 

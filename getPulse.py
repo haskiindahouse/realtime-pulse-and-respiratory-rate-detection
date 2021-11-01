@@ -61,7 +61,27 @@ def getPulse_simplePeaks(timeData: list, pulseData: list):
     return pulse
 
 
-def getPulse_cutLowFreq():
+def getPulse_cutLowFreq(timeData: list, pulseData: list):
+    pulseDataN = normalizeData(pulseData)
+
+    # using two unix times from start and end
+    elapsedTime = timeData[-1] - timeData[0]
+    
+    # sample rate
+    fs = len(pulseData)/elapsedTime
+
+    # frequency which we should throw out using filtering
+    lowcut = 2
+
+    filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=4)
+
+    # основная настройка гиперпараметров здесь
+    peaks, _ = find_peaks(filteredPulseData, distance=2)
+
+    return int(len(peaks)*(60/fs))
+
+
+def getPulse_cutLowFreq_ex():
     files = os.listdir(path="./pulseDataRaw")
     for filename in files:
 
@@ -90,6 +110,7 @@ def getPulse_cutLowFreq():
 
         plt.plot(timeData, filteredPulseData, label='Filtered signal')
 
+        # основная настройка гиперпараметров здесь
         peaks, _ = find_peaks(filteredPulseData, distance=4)
         print("Pulse is:", int(len(peaks)*(60/fs)))
 
@@ -228,7 +249,7 @@ def exampleFunc():
 
 
 if __name__ == "__main__":
-    getPulse_cutLowFreq()
+    getPulse_cutLowFreq_ex()
 
 
 
