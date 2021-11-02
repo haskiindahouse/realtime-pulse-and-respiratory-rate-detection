@@ -76,7 +76,7 @@ def getPulse_cutLowFreq(timeData: list, pulseData: list):
     filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=4)
 
     # основная настройка гиперпараметров здесь
-    peaks, _ = find_peaks(filteredPulseData, distance=2)
+    peaks, _ = find_peaks(filteredPulseData, distance=1)
 
     return int(len(peaks)*(60/fs))
 
@@ -99,10 +99,17 @@ def getPulse_cutLowFreq_ex():
         fs = len(pulseData)/elapsedTime
 
         # frequency which we should throw out using filtering
-        lowcut = 2
+        lowcut = (fs / 3) - 1
 
         plt.figure(1)
         plt.clf()
+
+        # cutting off low probability results
+        max_bpm = 170
+        max_bpm_per_sec = max_bpm / fs
+        max_beats_spreading_in_one_sec = int(fs / max_bpm_per_sec) - 1
+
+        print(fs)
 
         plt.plot(timeData, pulseDataN, label='Noisy signal')
 
@@ -111,7 +118,7 @@ def getPulse_cutLowFreq_ex():
         plt.plot(timeData, filteredPulseData, label='Filtered signal')
 
         # основная настройка гиперпараметров здесь
-        peaks, _ = find_peaks(filteredPulseData, distance=4)
+        peaks, _ = find_peaks(filteredPulseData, distance=max_beats_spreading_in_one_sec)
         print("Pulse is:", int(len(peaks)*(60/fs)))
 
         for i in range(len(peaks)):
