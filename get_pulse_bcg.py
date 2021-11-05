@@ -63,6 +63,7 @@ while(True):
     heartbeat_values = heartbeat_values[1:] + [np.average(crop_img)]
     heartbeat_times = heartbeat_times[1:] + [time.time()]
 
+    '''
     if (count_frames % 250 == 0):
         itc = 0
         tempd = pd.DataFrame({
@@ -70,10 +71,12 @@ while(True):
             "y" : heartbeat_values
         })
         tempd.to_csv("./pulseDataRaw/d{}.csv".format(int(time.time())), sep=",")
-   
+    '''
+    if (count_frames % 250 == 0):
+        print(getPulse_cutLowFreq(heartbeat_times, heartbeat_values))
 
     # Display the frame in both windows
-    cv2.imshow('Crop', crop_img)
+    # cv2.imshow('Crop', crop_img)
     cv2.imshow('Main', img)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
