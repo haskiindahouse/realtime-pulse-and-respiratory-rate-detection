@@ -130,3 +130,6 @@ dmypy.json
 
 # database
 users.sqlite
+
+# Idea temperary packages
+.idea
