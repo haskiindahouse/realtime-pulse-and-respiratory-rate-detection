@@ -4,3 +4,6 @@ opencv-python
 cmake
 dlib
 face-recognition
+pandas
+matplotlib
+scipy
