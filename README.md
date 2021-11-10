@@ -1,6 +1,21 @@
-# realtime-pulse-and-respiratory-rate-detection
-Second coursework &amp; case from Sber Data Science competition. Links to scientific papers to which I will refer will be here.
-# Theory and resources
-## About inspirations
-I found this https://github.com/guyhughes/detect-pulse  and start trying to make it more accurate but ***the idea is the same***.
-Also I read and analyse https://www.osapublishing.org/oe/fulltext.cfm?uri=oe-16-26-21434&id=175396 .
+<h1 align="center">
+<br>
+<p align="center">
+  <img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/app_logo.png?raw=true" alt="Pulser custom icon" width="200"/>
+</p>
+<br>
+Pulser
+<br>
+</h1>
+<h4 align="center">App to detect pulse and respiratory rate in Real-Time.</h4>
+<br>
+
+##  License
+
+MIT
+
+---
+
+> GitHub [@haskiindahouse](https://github.com/haskiindahouse) [@sayonara20xx](https://github.com/sayonara20xx)
+
+> Telegram [@haskiindahouse](https://t.me/haskiindahouse)
