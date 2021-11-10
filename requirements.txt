@@ -7,3 +7,4 @@ face-recognition
 pandas
 matplotlib
 scipy
+scipy
