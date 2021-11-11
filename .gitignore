@@ -130,3 +130,6 @@ dmypy.json
 
 # Idea temperary packages
 .idea
+
+# .DS Store
+.DS_Store

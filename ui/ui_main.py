@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, pyqtSlot, QSize, QByteArray, QBuffer, QIODevice
 from PyQt5.QtGui import QImage, QPixmap, QIcon
 
 from database import createDB
-from stylesheets import plainTextStyle, pushButtonStyle, mainWindowStyle, lineEditStyle
+from ui.stylesheets import plainTextStyle, pushButtonStyle, mainWindowStyle, lineEditStyle
 from model.thread import Thread
 
 

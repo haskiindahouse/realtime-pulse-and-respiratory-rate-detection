@@ -1,11 +1,10 @@
 import sys
 import os
 
-import cv2
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 
-from ui_main import Ui
+from ui.ui_main import Ui
 
 
 def initUi():
@@ -15,7 +14,3 @@ def initUi():
     ex = Ui()
 
     sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-   initUi()

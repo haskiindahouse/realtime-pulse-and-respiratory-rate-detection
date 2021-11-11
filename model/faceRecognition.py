@@ -1,7 +1,7 @@
 import os
+import shutil
 import face_recognition
 import cv2
-import glob
 import numpy as np
 
 from database import createDB
@@ -19,7 +19,7 @@ class FaceRecognition:
 
     def setUpUsers(self, con, customLog):
         """
-        Задает список пользователей по выбору папки.
+        Задает список пользователей.
         """
         info = createDB.getAllInfo(con)
         pathToTemp = "../temp/"
@@ -42,10 +42,7 @@ class FaceRecognition:
             self.known_face_encodings.append(user_face_encoding)
             self.known_face_names.append(fileName)
 
-        files = glob.glob(pathToTemp + '*')
-        for f in files:
-            os.remove(f)
-        os.rmdir(pathToTemp)
+        shutil.rmtree(pathToTemp)
 
     def resize(self, frame):
         """
