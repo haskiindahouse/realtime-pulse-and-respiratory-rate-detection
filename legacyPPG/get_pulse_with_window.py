@@ -1,12 +1,10 @@
-from os import sep
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib; matplotlib.use('agg')
-import pandas as pd
 import time
 
-from getPulse import getPulse_cutLowFreq
+from model.getPulse import getPulse_cutLowFreq
 
 # 480 x 640
 cap = cv2.VideoCapture(0)
