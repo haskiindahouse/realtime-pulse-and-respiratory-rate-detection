@@ -2,7 +2,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QImage
 import cv2
 from model.faceRecognition import FaceRecognition
-
+import time
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
@@ -14,12 +14,12 @@ class Thread(QThread):
 
     def run(self):
         self.cap = cv2.VideoCapture(0)
-        # TODO
-        # Добавить кнопку возможность выбора католога с пользователями
-        # Придумать как хранить их лучше (папка с .png?)
+        self.cap.set(cv2.CAP_PROP_FPS, 30)  # not working on MACOS
+
         faceRec = FaceRecognition(self.con, self.customLog)
         while True:
             ret, frame = self.cap.read()
+            faceRec.frameCount += 1
             faceRec.initFaceRecognition(frame)
             if ret:
                 rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

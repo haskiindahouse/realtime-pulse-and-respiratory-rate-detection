@@ -1,10 +1,13 @@
 import os
 import shutil
+import time
+
 import face_recognition
 import cv2
 import numpy as np
 
 from database import createDB
+from model.getPulse import getPulse
 
 
 class FaceRecognition:
@@ -16,6 +19,13 @@ class FaceRecognition:
         self.face_locations = []
         self.face_names = []
         self.setUpUsers(con, customLog)
+        self.frameCount = 0
+        self.pulse = "Processing..."
+        self.heartBeatCount = 250
+        self.heartBeatTimes = [time.time()] * self.heartBeatCount
+        self.heartBeatValues = [0] * self.heartBeatCount
+        self.frame_rate = 30
+        self.prev = 0
 
     def setUpUsers(self, con, customLog):
         """
@@ -87,11 +97,23 @@ class FaceRecognition:
             bottom_fhead = int(top + (bottom - top) / 50)
             left_fhead = int(left + (right - left) / 2 - (right - left) / 50)
             right_fhead = int(right - (right - left) / 2 + (right - left) / 50)
-            pulse = np.average(self.rgb_small_frame)
+
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
             cv2.rectangle(frame, (left_fhead, top_fhead), (right_fhead, bottom_fhead), (0, 255, 0), 2)
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             cv2.rectangle(frame, (left - 1, bottom), (right + 1, bottom + 36), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
+
+            self.heartBeatValues = self.heartBeatValues[1:] + [np.average(self.rgb_small_frame)]
+            self.heartBeatTimes = self.heartBeatTimes[1:] + [time.time()]
+            time_elapsed = time.time() - self.prev
+
+            if self.frameCount % 250 == 0 and time_elapsed > 1. / self.frame_rate:
+
+                self.prev = time.time()
+                newPulse = getPulse(self.heartBeatTimes, self.heartBeatValues)
+                if newPulse is not None:
+                    self.pulse = int(newPulse)
+
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-            cv2.putText(frame, str(pulse), (left + 6, bottom + 35), font, 1.0, (255, 255, 255), 1)
+            cv2.putText(frame, str(self.pulse), (left + 6, bottom + 35), font, 1.0, (255, 255, 255), 1)
