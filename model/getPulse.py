@@ -82,7 +82,7 @@ def getPulse_cutLowFreq(timeData: list, pulseData: list):
     max_bpm_per_sec = max_bpm / fs
     max_beats_spreading_in_one_sec = int(fs / max_bpm_per_sec) - 1
 
-    filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=4)
+    filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=5)
     # основная настройка гиперпараметров здесь
     peaks, _ = find_peaks(filteredPulseData, distance=max_beats_spreading_in_one_sec)
     return int(len(peaks) * (60 / fs))
