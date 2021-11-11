@@ -63,7 +63,7 @@ class Ui(QWidget):
         self.setWindowIcon(QIcon('sources/app_logo.png'))
         self.setStyleSheet(mainWindowStyle())
         self.setWindowTitle('PULSER 1.0')
-        self.resize(800, 500)
+        self.resize(1000, 600)
         self.show()
 
     def appendUser(self):
