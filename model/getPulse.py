@@ -66,7 +66,7 @@ def getPulse_simplePeaks(timeData: list, pulseData: list):
 
 
 def getPulse_cutLowFreq(timeData: list, pulseData: list):
-    pulseDataN = normalizeData(pulseData)
+    normalizeData(pulseData)
 
     # using two unix times from start and end
     elapsedTime = timeData[-1] - timeData[0]
@@ -81,17 +81,18 @@ def getPulse_cutLowFreq(timeData: list, pulseData: list):
     max_bpm = 170
     max_bpm_per_sec = max_bpm / fs
     max_beats_spreading_in_one_sec = int(fs / max_bpm_per_sec) - 1
-    #print(fs)
 
     filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=4)
-
     # основная настройка гиперпараметров здесь
     peaks, _ = find_peaks(filteredPulseData, distance=max_beats_spreading_in_one_sec)
-    return (int(len(peaks)*(60/fs)))
+    return int(len(peaks) * (60 / fs))
 
 
 def getPulse_cutLowFreq_ex():
     files = os.listdir(path="./pulseDataRaw")
+    ret = 0
+    print("len files = " + str(len(files)))
+
     for filename in files:
 
         rawData = pd.read_csv("./pulseDataRaw/{}".format(filename), sep=",")
@@ -110,39 +111,41 @@ def getPulse_cutLowFreq_ex():
         # frequency which we should throw out using filtering
         lowcut = (fs / 3) - 1
 
-        plt.figure(1)
-        plt.clf()
+        #plt.figure(1)
+        #plt.clf()
 
         # cutting off low probability results
         max_bpm = 170
         max_bpm_per_sec = max_bpm / fs
         max_beats_spreading_in_one_sec = int(fs / max_bpm_per_sec) - 1
 
-        print(fs)
-
-        plt.plot(timeData, pulseDataN, label='Noisy signal')
+        #plt.plot(timeData, pulseDataN, label='Noisy signal')
 
         filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=4)
 
-        plt.plot(timeData, filteredPulseData, label='Filtered signal')
+        #plt.plot(timeData, filteredPulseData, label='Filtered signal')
 
         # основная настройка гиперпараметров здесь
         peaks, _ = find_peaks(filteredPulseData, distance=max_beats_spreading_in_one_sec)
         print("Pulse is:", int(len(peaks)*(60/fs)))
+        ret += len(peaks) * 60 / fs
+        #for i in range(len(peaks)):
+        #    plt.plot(timeData[peaks[i]], filteredPulseData[peaks[i]], "x")
 
-        for i in range(len(peaks)):
-            plt.plot(timeData[peaks[i]], filteredPulseData[peaks[i]], "x")
+        #plt.grid(True)
+        #plt.axis('tight')
+        #plt.legend(loc='upper left')
 
-        plt.grid(True)
-        plt.axis('tight')
-        plt.legend(loc='upper left')
-
-        plt.show()
+        # Показывать вспомогательные plot - для наглядности вычислений
+        #plt.show()
+    if not ret:
+        return None
+    return ret / len(files)
 
 
 def getPulse_enchanced_ex2():
     # Провал: для такого фильтра нужна большая частота считывания сигнала
-    files = os.listdir(path="./pulseDataRaw")
+    files = os.listdir(path="../pulseDataRaw")
 
     for filename in files:
 
@@ -232,7 +235,7 @@ def exampleFunc():
     # example method which working with data from ./pulseDataRaw directory
     # there are located the most quality data collected using PPG or BCG
     # method using web camera
-    files = os.listdir(path="./pulseDataRaw")
+    files = os.listdir(path="../pulseDataRaw")
 
     for filename in files:
 
@@ -264,8 +267,8 @@ def exampleFunc():
         plt.show()
 
 
-if __name__ == "__main__":
-    getPulse_cutLowFreq_ex()
+def getPulse(heartBeatTimes, heartBeatValues):
+    return getPulse_cutLowFreq(heartBeatTimes, heartBeatValues)
 
 
 
