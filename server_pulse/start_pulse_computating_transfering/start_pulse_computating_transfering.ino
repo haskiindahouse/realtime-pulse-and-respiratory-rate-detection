@@ -10,11 +10,11 @@
 */
 
 /* !!! THESE values you need to change on yours (local server address, essid and bssid(password) for) */
-#define SERVER_IP "http://192.168.2.100:5000/"
+#define SERVER_IP "http://192.168.2.100:5000/" // for example
 
 #ifndef STASSID
-#define STASSID "ЖАК ДАСЬКО"
-#define STAPSK  "1945hrb1327a"
+#define STASSID "name_of_your_wifi_or_ap"
+#define STAPSK  "password"
 #endif
 /* also, you can try change delay between POST requests (in case of inaccurate work set bigger value) */
 
