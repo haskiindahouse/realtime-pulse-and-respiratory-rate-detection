@@ -6,11 +6,31 @@
 <br>
 Pulser
 <br>
+
+![](https://img.shields.io/github/license/haskiindahouse/realtime-pulse-and-respiratory-rate-detection.svg)
+![](https://img.shields.io/github/stars/haskiindahouse/realtime-pulse-and-respiratory-rate-detection.svg)
+![](https://img.shields.io/github/forks/haskiindahouse/realtime-pulse-and-respiratory-rate-detection.svg)
+![](https://img.shields.io/github/watchers/haskiindahouse/realtime-pulse-and-respiratory-rate-detection.svg)
+
 </h1>
 <h4 align="center">App to detect pulse and respiratory rate in Real-Time.</h4>
 <br>
 
-##  License
+## How It Work 
+
+
+## Build With
+
+
+## Installation
+Firstly, clone the repo:<br>
+`git clone https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection`
+<br>And then just run:<br>`python main.py`
+
+## Features
+
+
+## License
 
 MIT
 
