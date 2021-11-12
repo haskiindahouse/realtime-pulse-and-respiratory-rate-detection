@@ -16,6 +16,8 @@ Pulser
 <h4 align="center">App to detect pulse and respiratory rate in Real-Time.</h4>
 <br>
 
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/example.png?raw=true" alt="Scipy Logo" width="1000"/><br>
+
 ## How It Work 
 
 
