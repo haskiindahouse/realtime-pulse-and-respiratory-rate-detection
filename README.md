@@ -34,7 +34,9 @@ Pulser
 ## Installation
 Firstly, clone the repo:<br>
 `git clone https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection`
+<br>Install modules from requirements:<br>`pip install requirements.txt`
 <br>And then just run:<br>`python main.py`
+<br>If you want just check algo and you have weak device (output to console):<br>`python get_pulse_bcg.py`
 
 ## Features
 
