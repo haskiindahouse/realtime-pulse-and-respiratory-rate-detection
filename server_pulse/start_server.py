@@ -1,25 +1,42 @@
-import socket
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import logging
 
-def run():
-    # Создаем сокет над ip/tcp (по ним соединяемся), указываем, что используем их протоколы (INET - ipv4, вторая для TCP)
-    # AF - Adress Family
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # устанавливаем параметры, чтобы после прекращения работы порт был свободен, отключаем защитный кд для доотправки пакетов
-    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    # Связываемся с определённым адресом (через домен можно) и портом
-    # !Золотой компендиум проблем! чтобы сделать доступным в локальной сети, надо поставить не 'localhost', а '', весь диапазон локальных адресов
-    server_socket.bind(('', 5000))
-    # Говорим, что можно прослушивать бинженный адрес
-    server_socket.listen()
+class S(BaseHTTPRequestHandler):
+    def _set_response(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
 
-    while True:
-        # при получении запроса получаем клиентский сокет и адрес (порт и айпи), который ему назначила система
-        client_socket, addr = server_socket.accept()
-        # чтобы получить содержание запроса, используем следующий метод (в скобках кол-во байт в пакете)
-        request = client_socket.recv(1024)
-        print(request)
-        
-        # закрываем соединение, только после этого у клиента всё обновится и появится
+    def do_GET(self):
+        logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
+        self._set_response()
+        self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
-if __name__ == "__main__":
-    run()
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
+                str(self.path), str(self.headers), post_data.decode('utf-8'))
+
+        self._set_response()
+        self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+
+def run(server_class=HTTPServer, handler_class=S, port=5000):
+    logging.basicConfig(level=logging.INFO)
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    logging.info('Starting httpd...\n')
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    httpd.server_close()
+    logging.info('Stopping httpd...\n')
+
+if __name__ == '__main__':
+    from sys import argv
+
+    if len(argv) == 2:
+        run(port=int(argv[1]))
+    else:
+        run()
