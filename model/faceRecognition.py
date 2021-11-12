@@ -63,6 +63,9 @@ class FaceRecognition:
     def bgrToRgb(self):
         self.rgb_small_frame = self.small_frame[:, :, ::-1]
 
+    def rgbToGrey(self):
+        return cv2.cvtColor(self.small_frame, cv2.COLOR_RGB2GRAY)
+
     def findFace(self):
         self.face_locations = face_recognition.face_locations(self.rgb_small_frame)
         face_encodings = face_recognition.face_encodings(self.rgb_small_frame, self.face_locations)
@@ -88,6 +91,7 @@ class FaceRecognition:
         self.displayResults(frame)
 
     def displayResults(self, frame):
+        gx, gy, gw, gh = 100, 100, 100, 100
         for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
             top *= 4
             right *= 4
@@ -102,18 +106,31 @@ class FaceRecognition:
             cv2.rectangle(frame, (left_fhead, top_fhead), (right_fhead, bottom_fhead), (0, 255, 0), 2)
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             cv2.rectangle(frame, (left - 1, bottom), (right + 1, bottom + 36), (0, 0, 255), cv2.FILLED)
+
+            # Coordinates for color grabber
+            gx = ((right - left) / 2) + left - (right - left) / 4
+            gy = bottom - ((bottom - top) / 5)
+
+            gh = (bottom - top) / 2
+            gw = (right - left) / 2
+
+        cropImg = self.rgbToGrey()[int(gy - gh):int(gy), int(gx):int(gx + gw)]
+
+        self.heartBeatValues = self.heartBeatValues[1:] + [np.average(self.rgb_small_frame)]
+        self.heartBeatTimes = self.heartBeatTimes[1:] + [time.time()]
+
+        if not self.frameCount % 250:
+
+            newPulse = getPulse(self.heartBeatTimes, self.heartBeatValues, self.pulse)
+            if newPulse is not None:
+                self.pulse = int(newPulse)
+
+        for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
+            top *= 4
+            right *= 4
+            bottom *= 4
+            left *= 4
             font = cv2.FONT_HERSHEY_DUPLEX
-
-            self.heartBeatValues = self.heartBeatValues[1:] + [np.average(self.rgb_small_frame)]
-            self.heartBeatTimes = self.heartBeatTimes[1:] + [time.time()]
-            time_elapsed = time.time() - self.prev
-
-            if self.frameCount % 250 == 0 and time_elapsed > 1. / self.frame_rate:
-
-                self.prev = time.time()
-                newPulse = getPulse(self.heartBeatTimes, self.heartBeatValues)
-                if newPulse is not None:
-                    self.pulse = int(newPulse)
 
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
             cv2.putText(frame, str(self.pulse), (left + 6, bottom + 35), font, 1.0, (255, 255, 255), 1)

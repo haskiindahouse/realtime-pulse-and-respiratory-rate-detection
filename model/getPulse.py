@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks, butter, lfilter, filtfilt
 import numpy
+import math
 
 
 def normalizeData(data : list):
@@ -34,7 +35,8 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 def butter_highpass(cutoff, fs, order=5):
     nyq = 0.5 * fs
     normal_cutoff = cutoff / nyq
-    b, a = butter(order, normal_cutoff, btype='high', analog=False)
+    b, a = butter(order, normal_cutoff, btype='high', analog=False, output='ba')
+
     return b, a
 
 
@@ -65,12 +67,12 @@ def getPulse_simplePeaks(timeData: list, pulseData: list):
     return pulse
 
 
-def getPulse_cutLowFreq(timeData: list, pulseData: list):
+def getPulse_cutLowFreq(timeData: list, pulseData: list, currentPulse):
     normalizeData(pulseData)
 
     # using two unix times from start and end
     elapsedTime = timeData[-1] - timeData[0]
-    
+
     # sample rate
     fs = len(pulseData)/elapsedTime
 
@@ -81,17 +83,29 @@ def getPulse_cutLowFreq(timeData: list, pulseData: list):
     max_bpm = 170
     max_bpm_per_sec = max_bpm / fs
     max_beats_spreading_in_one_sec = int(fs / max_bpm_per_sec) - 1
+    param = int(math.fabs(fs - max_bpm_per_sec) * lowcut / 2) - max_beats_spreading_in_one_sec
+    if param < 1:
+        return getPulse_cutLowFreq_ex()
 
-    filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs, order=5)
+    filteredPulseData = pulseData
+    # Из-за ошибки в библиотечной функции, пришлось обходить ее.
+    if currentPulse is 'Processing...':
+        filteredPulseData = butter_highpass_filter(pulseData, lowcut, fs=fs, order=4)
+
     # основная настройка гиперпараметров здесь
-    peaks, _ = find_peaks(filteredPulseData, distance=max_beats_spreading_in_one_sec)
-    return int(len(peaks) * (60 / fs))
+    peaks, _ = find_peaks(filteredPulseData, distance=param)
+    newPulse = int(len(peaks) * 60 / fs)
+    if str(currentPulse).isnumeric():
+        delta = (newPulse - currentPulse) / param
+        currentPulse += delta
+        return int(currentPulse)
+    else:
+        return int(newPulse)
 
 
 def getPulse_cutLowFreq_ex():
     files = os.listdir(path="./pulseDataRaw")
     ret = 0
-    print("len files = " + str(len(files)))
 
     for filename in files:
 
@@ -127,7 +141,7 @@ def getPulse_cutLowFreq_ex():
 
         # основная настройка гиперпараметров здесь
         peaks, _ = find_peaks(filteredPulseData, distance=max_beats_spreading_in_one_sec)
-        print("Pulse is:", int(len(peaks)*(60/fs)))
+        #print("Pulse is:", int(len(peaks)*(60/fs)))
         ret += len(peaks) * 60 / fs
         #for i in range(len(peaks)):
         #    plt.plot(timeData[peaks[i]], filteredPulseData[peaks[i]], "x")
@@ -267,8 +281,8 @@ def exampleFunc():
         plt.show()
 
 
-def getPulse(heartBeatTimes, heartBeatValues):
-    return getPulse_cutLowFreq(heartBeatTimes, heartBeatValues)
+def getPulse(heartBeatTimes, heartBeatValues, currentPulse):
+    return getPulse_cutLowFreq(heartBeatTimes, heartBeatValues, currentPulse)
 
 
 
