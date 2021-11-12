@@ -9,12 +9,14 @@
    then put your PC's IP address in SERVER_IP below, port 9080 (instead of default 80):
 */
 
+/* !!! THESE values you need to change on yours (local server address, essid and bssid(password) for) */
 #define SERVER_IP "http://192.168.2.100:5000/"
 
 #ifndef STASSID
 #define STASSID "ЖАК ДАСЬКО"
 #define STAPSK  "1945hrb1327a"
 #endif
+/* also, you can try change delay between POST requests (in case of inaccurate work set bigger value) */
 
 unsigned long lastTime = 0;
 unsigned long timerDelay = 8000;
