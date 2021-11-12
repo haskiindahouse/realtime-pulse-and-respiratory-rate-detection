@@ -20,7 +20,14 @@ Pulser
 
 
 ## Build With
-
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/opencv_logo.png?raw=true" alt="OpenCv Logo" width="100"/><br>
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/qt_logo.png?raw=true" alt="Qt Logo" width="100"/><br>
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/scipy_logo.png?raw=true" alt="Scipy Logo" width="100"/><br>
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/pandas_logo.png?raw=true" alt="Pandas Logo" width="100"/><br>
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/numpy_logo.png?raw=true" alt="Numpy Logo" width="100"/><br>
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/sqlite_logo.png?raw=true" alt="SQLite Logo" width="100"/><br>
+<img src="https://github.com/haskiindahouse/realtime-pulse-and-respiratory-rate-detection/blob/main/sources/nodemcu_logo.png?raw=true" alt="NodeMcu Logo" width="100"/><br>
+![](http://ForTheBadge.com/images/badges/built-with-love.svg) <br>
 
 ## Installation
 Firstly, clone the repo:<br>
